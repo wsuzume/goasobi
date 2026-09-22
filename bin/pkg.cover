@@ -1,0 +1,7 @@
+mode: set
+github.com/wsuzume/goasobi/pkg/handler.go:11.2,12.1 1 1
+github.com/wsuzume/goasobi/pkg/handler.go:15.2,16.16 2 1
+github.com/wsuzume/goasobi/pkg/handler.go:17.3,19.1 2 0
+github.com/wsuzume/goasobi/pkg/handler.go:21.2,27.4 1 1
+github.com/wsuzume/goasobi/pkg/server.go:6.2,9.1 4 1
+github.com/wsuzume/goasobi/pkg/server.go:10.2,11.1 4 1
