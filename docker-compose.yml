@@ -3,6 +3,20 @@ services:
     build:
       context: .
       dockerfile: goasobi/Dockerfile
+    depends_on:
+      - scaler
     ports:
       - "8080:8080"
     restart: unless-stopped
+    # 動作切り替え
+    command: ["echo", "-p", "8080"]
+    # command: ["proxy", "-p", "8080", "-t", "http://scaler:8080"]
+
+  scaler:
+    image: scalarapi/api-reference:latest
+    volumes:
+      - ./openapi:/docs
+    restart: unless-stopped
+    # リバプロ時は以下をコメントアウトしてもよい
+    # ports:
+    #   - "8081:8080"

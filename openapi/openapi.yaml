@@ -1,0 +1,174 @@
+openapi: 3.0.3
+info:
+  title: goasobi API
+  description: Simple HTTP server with a hello endpoint and an echo endpoint.
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /:
+    get:
+      operationId: hello
+      summary: Say hello
+      description: Returns a static greeting message.
+      tags:
+        - hello
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelloResponse"
+              example:
+                message: "Hello, World!"
+
+  /echo:
+    get:
+      operationId: echoGet
+      summary: Echo the request (GET)
+      tags:
+        - echo
+      parameters:
+        - $ref: "#/components/parameters/AnyQueryParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/EchoResponse"
+    post:
+      operationId: echoPost
+      summary: Echo the request (POST)
+      tags:
+        - echo
+      parameters:
+        - $ref: "#/components/parameters/AnyQueryParam"
+      requestBody:
+        $ref: "#/components/requestBodies/EchoRequestBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/EchoResponse"
+    put:
+      operationId: echoPut
+      summary: Echo the request (PUT)
+      tags:
+        - echo
+      parameters:
+        - $ref: "#/components/parameters/AnyQueryParam"
+      requestBody:
+        $ref: "#/components/requestBodies/EchoRequestBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/EchoResponse"
+    delete:
+      operationId: echoDelete
+      summary: Echo the request (DELETE)
+      tags:
+        - echo
+      parameters:
+        - $ref: "#/components/parameters/AnyQueryParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/EchoResponse"
+    patch:
+      operationId: echoPatch
+      summary: Echo the request (PATCH)
+      tags:
+        - echo
+      parameters:
+        - $ref: "#/components/parameters/AnyQueryParam"
+      requestBody:
+        $ref: "#/components/requestBodies/EchoRequestBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/EchoResponse"
+
+components:
+  parameters:
+    AnyQueryParam:
+      name: any
+      in: query
+      required: false
+      description: >-
+        The /echo endpoint accepts arbitrary query parameters and reflects
+        them back in the response. This parameter is illustrative only.
+      schema:
+        type: string
+
+  requestBodies:
+    EchoRequestBody:
+      description: Arbitrary request body, returned as a string in the response.
+      required: false
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
+        text/plain:
+          schema:
+            type: string
+        application/json:
+          schema: {}
+
+  responses:
+    EchoResponse:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EchoResponse"
+          example:
+            method: "POST"
+            path: "/echo"
+            query:
+              foo:
+                - "bar"
+            headers:
+              X-Test:
+                - "value"
+            body: "hello"
+
+  schemas:
+    HelloResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: "Hello, World!"
+
+    EchoResponse:
+      type: object
+      required:
+        - method
+        - path
+        - query
+        - headers
+        - body
+      properties:
+        method:
+          type: string
+          description: The HTTP method of the request.
+          example: "POST"
+        path:
+          type: string
+          description: The request URL path.
+          example: "/echo"
+        query:
+          type: object
+          description: Query parameters, each mapped to a list of values.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        headers:
+          type: object
+          description: Request headers, each mapped to a list of values.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        body:
+          type: string
+          description: The raw request body as a string.

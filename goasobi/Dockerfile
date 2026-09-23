@@ -1,5 +1,17 @@
 # syntax=docker/dockerfile:1
 
+# ---- frontend builder ----
+FROM node:22-trixie-slim AS frontend-builder
+
+WORKDIR /src
+
+COPY goasobi-frontend/package.json goasobi-frontend/package-lock.json ./
+RUN npm ci
+
+COPY goasobi-frontend/ .
+
+RUN npm run build
+
 # ---- builder ----
 FROM golang:1.27-trixie AS builder
 
@@ -21,10 +33,11 @@ RUN apt-get update \
     && useradd -r -u 1000 -m hello
 
 COPY --from=builder /out/hello /usr/local/bin/hello
+COPY --from=frontend-builder /src/dist /usr/share/goasobi/static
 
 USER hello
 
 EXPOSE 8080
 
 ENTRYPOINT ["hello"]
-CMD ["-p", "8080"]
+CMD ["echo", "-p", "8080"]
